@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Run lint-staged first (this will handle formatting and linting)
+echo "🧹 Running lint-staged..."
+npx lint-staged || exit 1
+
+# Run type checking
+echo "🔍 Running type checking..."
+npm run type-check || exit 1
