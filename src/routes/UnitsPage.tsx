@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 
+import { Spinner } from "@/components/Spinner";
 import {
   Age,
   AGES,
@@ -11,13 +12,12 @@ import {
   MIN_COST,
   URL_PARAMS,
 } from "@/constants";
+import { FilterSection } from "@/features/FilterSection/FilterSection";
+import { UnitsTable } from "@/features/UnitsTable/UnitsTable";
+import { RootState } from "@/store/store";
+import { CostFilters } from "@/types/filter";
+import { Unit } from "@/types/units";
 
-import { Spinner } from "../components/Spinner";
-import { FilterSection } from "../features/FilterSection/FilterSection";
-import { UnitsTable } from "../features/UnitsTable/UnitsTable";
-import { RootState } from "../store/store";
-import { CostFilters } from "../types/filters";
-import { Unit } from "../types/units";
 import styles from "./UnitsPage.module.scss";
 
 const parseAgeParam = (param: string | null): Age => {

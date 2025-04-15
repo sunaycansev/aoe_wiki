@@ -1,0 +1,135 @@
+@use "sass:color";
+@use "../../styles/variables" as *;
+@use "sass:math";
+
+.filterSectionContainer {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-unit * 3;
+  padding: $spacing-unit * 2;
+  margin-bottom: $spacing-unit * 3;
+  border: 1px solid $border-color;
+  border-radius: 4px;
+  background-color: color.adjust($background-color, $lightness: 2%);
+  transition: box-shadow 0.3s ease;
+
+  @media (max-width: 768px) {
+    padding: $spacing-unit * 1.5;
+    gap: $spacing-unit * 1.5;
+  }
+
+  &:hover {
+    box-shadow: 0 2px 10px rgba($black, 0.05);
+  }
+}
+
+.filterHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid $border-color;
+  padding-bottom: $spacing-unit;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $spacing-unit;
+  }
+}
+
+.filterHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: $spacing-unit * 2;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $spacing-unit;
+  }
+}
+
+.filterHeading {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+  color: color.adjust($text-color, $lightness: -10%);
+
+  @media (max-width: 768px) {
+    font-size: 1.1rem;
+  }
+}
+
+.resultsSummary {
+  font-size: 0.9rem;
+  color: color.adjust($text-color, $lightness: -15%);
+  padding: math.div($spacing-unit, 2) $spacing-unit;
+  background-color: color.adjust($background-color, $lightness: 3%);
+  border-radius: 4px;
+  border: 1px solid $border-color;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    text-align: center;
+    font-size: 0.85rem;
+  }
+
+  strong {
+    color: $primary-color;
+  }
+}
+
+.ageFilterWrapper {
+  @media (max-width: 768px) {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: $spacing-unit;
+  }
+}
+
+.costFilterWrapper {
+  @media (max-width: 768px) {
+    padding-bottom: $spacing-unit;
+  }
+}
+
+.resetButton {
+  background-color: transparent;
+  border: 1px solid $border-color;
+  color: $primary-color;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: math.div($spacing-unit, 1.5) $spacing-unit;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    text-align: center;
+    font-size: 0.9rem;
+  }
+
+  &:hover {
+    background-color: color.adjust($primary-color, $alpha: -0.9);
+    border-color: $primary-color;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+  }
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
