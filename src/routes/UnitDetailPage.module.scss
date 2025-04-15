@@ -1,0 +1,77 @@
+@use "sass:color";
+@use "../styles/variables" as *;
+@use "../styles/mixins" as *;
+
+.container {
+  background-color: $background-color;
+  color: $text-color;
+  min-height: calc(100vh - 100px);
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-unit * 3;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  @include page-title-style;
+}
+
+.backLink {
+  @include medieval-button;
+  padding: $spacing-unit $spacing-unit * 2;
+}
+
+.detailsContainer {
+  background-color: $surface-light;
+  padding: $spacing-unit * 3;
+  border-radius: $border-radius-lg;
+  border: 1px solid $border-color;
+  box-shadow: $shadow-md;
+}
+
+.detailRow {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: $spacing-unit * 2;
+  padding: $spacing-unit * 1.5 0;
+  border-bottom: 1px solid color.adjust($border-color, $lightness: 10%);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+    gap: $spacing-unit * 0.5;
+  }
+}
+
+.label {
+  font-weight: 600;
+  color: $secondary-color;
+  white-space: nowrap;
+}
+
+.value {
+  color: $text-color;
+  word-break: break-word;
+}
+
+.loadingState,
+.errorState {
+  @include flex-center;
+  min-height: 300px;
+  font-size: 1.2rem;
+  color: rgba($text-color, 0.8);
+  text-align: center;
+  padding: $spacing-unit * 4;
+}
+
+.errorState {
+  color: $error-color;
+}
