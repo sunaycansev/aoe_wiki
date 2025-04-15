@@ -1,0 +1,14 @@
+@use "./styles/variables" as *;
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: $background-color;
+  color: $text-color;
+  padding-top: 4rem;
+
+  @media (max-width: 768px) {
+    padding-top: 3rem;
+  }
+}

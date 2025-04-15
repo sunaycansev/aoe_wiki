@@ -1,0 +1,38 @@
+@use "sass:color";
+@use "../styles/variables" as *;
+
+.layoutContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.header {
+  box-shadow: 0 2px 4px rgba($black, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: color.adjust($background-color, $lightness: -5%);
+}
+
+.mainContent {
+  flex-grow: 1;
+  $horizontal-padding: $spacing-unit * 4;
+  $bottom-padding: $spacing-unit * 3;
+  padding-top: 2rem;
+  padding-right: $horizontal-padding;
+  padding-bottom: $bottom-padding;
+  padding-left: $horizontal-padding;
+
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    padding-top: 1.5rem;
+    padding-right: 0.75rem;
+    padding-bottom: $spacing-unit * 2;
+    padding-left: 0.75rem;
+  }
+}
