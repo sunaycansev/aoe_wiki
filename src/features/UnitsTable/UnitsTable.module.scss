@@ -1,0 +1,136 @@
+@use "sass:color";
+@use "../../styles/variables" as *;
+
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+  background: $surface-light;
+  border-radius: $border-radius-lg;
+  box-shadow: $shadow-sm;
+  border: 1px solid $border-color;
+}
+
+.tableContainer {
+  width: 100%;
+  overflow-x: auto;
+  min-height: 650px;
+}
+
+.unitsTable {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+
+.tableHeader {
+  position: relative;
+  background-color: $surface-dark;
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: $text-color;
+  border-bottom: 2px solid $border-color;
+  user-select: none;
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background-color: darken($surface-dark, 5%);
+  }
+
+  @media (max-width: 768px) {
+    padding: 0.5rem 2.25rem 0.5rem 0.75rem;
+    font-size: 0.85rem;
+  }
+}
+
+.sortableHeader {
+  cursor: pointer;
+  &:hover {
+    background-color: color.adjust($surface-dark, $lightness: -5%);
+  }
+}
+
+.tableRow {
+  border-bottom: 1px solid $border-color;
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background-color: rgba($primary-color, 0.05);
+  }
+
+  td {
+    padding: 0.75rem 1rem;
+    color: $text-color;
+    font-size: 0.9rem;
+
+    @media (max-width: 768px) {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+    }
+  }
+}
+
+.descriptionCell {
+  min-width: 200px;
+  max-width: 400px;
+  white-space: normal;
+  line-height: 1.4;
+
+  @media (max-width: 768px) {
+    max-width: 200px;
+  }
+}
+
+.noResultsRow {
+  cursor: default;
+  &:hover {
+    background-color: transparent;
+  }
+}
+
+.noResultsCell {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: rgba($text-color, 0.7);
+  font-style: italic;
+}
+
+.sortIndicator {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.85em;
+  color: $primary-color;
+}
+
+.costDetailsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+
+  @media (max-width: 768px) {
+    gap: 0.25rem;
+  }
+}
+
+.costDetail {
+  background-color: $surface-dark;
+  color: $text-color;
+  padding: 0.25rem 0.5rem;
+  border-radius: $border-radius-sm;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  border: 1px solid $border-color;
+
+  @media (max-width: 768px) {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.75rem;
+  }
+}
+
+.unknownCost {
+  color: rgba($text-color, 0.7);
+  font-style: italic;
+}

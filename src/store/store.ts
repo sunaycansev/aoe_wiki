@@ -1,12 +1,14 @@
 import { configureStore, ConfigureStoreOptions } from "@reduxjs/toolkit";
 import createSagaMiddleware from "redux-saga";
 
-import { rootSaga } from "@/store/sagas/rootSaga";
-import audioReducer from "@/store/slices/audioSlice";
+import { rootSaga } from "./sagas/rootSaga";
+import audioReducer from "./slices/audioSlice";
+import unitsReducer from "./slices/unitsSlice";
 
 const sagaMiddleware = createSagaMiddleware();
 
 const rootReducer = {
+  units: unitsReducer,
   audio: audioReducer,
 };
 

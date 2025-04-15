@@ -1,5 +1,7 @@
-import { all } from "redux-saga/effects";
+import { all, fork } from "redux-saga/effects";
+
+import { watchFetchUnits } from "./unitsSage";
 
 export function* rootSaga() {
-  yield all([]);
+  yield all([fork(watchFetchUnits)]);
 }

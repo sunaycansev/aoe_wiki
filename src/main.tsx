@@ -3,11 +3,13 @@ import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
+import { MainLayout } from "@/layouts/MainLayout";
+import { store } from "@/store/store";
+
 import App from "./App.tsx";
-import { MainLayout } from "./layouts/MainLayout";
-import { store } from "./store/store";
-const HomePage = lazy(() => import("./routes/HomePage"));
-const UnitsPage = lazy(() => import("./routes/UnitsPage"));
+
+const HomePage = lazy(() => import("@/routes/HomePage"));
+const UnitsPage = lazy(() => import("@/routes/UnitsPage"));
 
 import "./styles/global.scss";
 

@@ -24,7 +24,7 @@ const parseAgeParam = (param: string | null): Age => {
   if (!param) return "All";
   const lowerParam = param.toLowerCase();
   const matchedAge = AGES.find((age) => age.toLowerCase() === lowerParam);
-  return matchedAge || "All"; // Return matched age (preserving original casing) or default to "All"
+  return matchedAge || "All";
 };
 
 const parseCostParam = (param: string | null): [number, number] | null => {
@@ -45,8 +45,6 @@ const parseCostParam = (param: string | null): [number, number] | null => {
   return [min, max];
 };
 
-// --- Component --- //
-
 const UnitsPage = () => {
   const {
     data: allUnits,
@@ -55,7 +53,6 @@ const UnitsPage = () => {
   } = useSelector((state: RootState) => state.units);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // --- Derive Filter State from URL --- //
   const selectedAge = useMemo(
     () => parseAgeParam(searchParams.get(URL_PARAMS.AGE)),
     [searchParams],
@@ -77,7 +74,6 @@ const UnitsPage = () => {
     return filters;
   }, [searchParams]);
 
-  // --- Handlers to Update URL --- //
   const handleAgeChange = useCallback(
     (newAge: Age) => {
       const newSearchParams = new URLSearchParams(searchParams);
@@ -86,7 +82,7 @@ const UnitsPage = () => {
       } else {
         newSearchParams.set(URL_PARAMS.AGE, newAge);
       }
-      setSearchParams(newSearchParams, { replace: true }); // Use replace to avoid excessive history entries
+      setSearchParams(newSearchParams, { replace: true });
     },
     [searchParams, setSearchParams],
   );
@@ -104,83 +100,66 @@ const UnitsPage = () => {
       const currentValue = searchParams.get(paramKey);
 
       if (value === null) {
-        // Only update URL if the parameter actually exists currently
         if (currentValue !== null) {
           newSearchParams.delete(paramKey);
           setSearchParams(newSearchParams, { replace: true });
         }
       } else {
         const newValueString = `${value[0]}-${value[1]}`;
-        // Only update URL if the formatted value string is different
         if (currentValue !== newValueString) {
           newSearchParams.set(paramKey, newValueString);
           setSearchParams(newSearchParams, { replace: true });
         }
       }
-      // No unconditional setSearchParams here anymore
     },
     [searchParams, setSearchParams],
   );
 
-  // Handle Reset Filters
   const handleResetFilters = useCallback(() => {
-    // Remove all filter parameters and navigate to clean URL
     setSearchParams({}, { replace: true });
   }, [setSearchParams]);
 
-  // --- Filtering Logic --- //
   const filteredUnits = useMemo(() => {
-    if (loading !== "succeeded") return []; // Return empty if not loaded
+    if (loading !== "succeeded") return [];
 
     return allUnits.filter((unit: Unit) => {
-      // 1. Filter by Age (Case-insensitive comparison)
       if (
         selectedAge !== "All" &&
-        unit.age?.toLowerCase() !== selectedAge.toLowerCase() // Use lowercase comparison
+        unit.age?.toLowerCase() !== selectedAge.toLowerCase()
       ) {
         return false;
       }
 
-      // 2. Filter by Costs
       for (const type of COST_TYPES) {
         const range = costFilters[type];
         if (range) {
-          // Special handling for units with missing cost data (null cost)
-          // This could indicate incomplete data rather than truly free units
           if (!unit.cost) {
-            // If the range starts at 0, include these units with unknown cost
-            // Otherwise exclude them when filtering for higher cost values
             return range[0] === 0;
           }
 
-          const unitCost = unit.cost[type] ?? 0; // Default to 0 if cost type doesn't exist for unit
+          const unitCost = unit.cost[type] ?? 0;
           if (unitCost < range[0] || unitCost > range[1]) {
             return false;
           }
         }
       }
 
-      // If passed all filters
       return true;
     });
   }, [allUnits, selectedAge, costFilters, loading]);
 
-  // Track the actual filtered count after table filtering (search)
   const [tableFilteredCount, setTableFilteredCount] = useState(
     filteredUnits.length,
   );
 
-  // When filteredUnits changes, reset the table filtered count
   useEffect(() => {
     setTableFilteredCount(filteredUnits.length);
   }, [filteredUnits.length]);
 
-  // Handler for when table filtered count changes
   const handleTableFilteredCountChange = useCallback((count: number) => {
     setTableFilteredCount(count);
   }, []);
 
-  // --- Render --- //
   return (
     <div className={styles.unitsPageContainer}>
       <h1 className={styles.pageTitle}>Units Page</h1>
