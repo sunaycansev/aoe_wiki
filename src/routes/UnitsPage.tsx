@@ -66,8 +66,8 @@ const UnitsPage = () => {
         type === "Wood"
           ? URL_PARAMS.WOOD
           : type === "Food"
-          ? URL_PARAMS.FOOD
-          : URL_PARAMS.GOLD;
+            ? URL_PARAMS.FOOD
+            : URL_PARAMS.GOLD;
       filters[type] = parseCostParam(searchParams.get(paramKey));
     });
 
@@ -94,8 +94,8 @@ const UnitsPage = () => {
         type === "Wood"
           ? URL_PARAMS.WOOD
           : type === "Food"
-          ? URL_PARAMS.FOOD
-          : URL_PARAMS.GOLD;
+            ? URL_PARAMS.FOOD
+            : URL_PARAMS.GOLD;
 
       const currentValue = searchParams.get(paramKey);
 

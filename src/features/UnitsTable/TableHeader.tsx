@@ -30,8 +30,8 @@ export const TableHeader = <TData,>({
                 header.column.getIsSorted() === "asc"
                   ? "ascending"
                   : header.column.getIsSorted() === "desc"
-                  ? "descending"
-                  : "none"
+                    ? "descending"
+                    : "none"
               }
             >
               {header.isPlaceholder
