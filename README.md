@@ -1,54 +1,127 @@
-# React + TypeScript + Vite
+# Age of Empires Wiki
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A web application to browse, filter, and view details about units from Age of Empires II, built using modern front-end technologies.
 
-Currently, two official plugins are available:
+## 🚀 Live Demo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Check out the live demo: [AoE Wiki](https://aoe-wiki-n2uc44gkn-sunaycansevs-projects.vercel.app)
 
-## Expanding the ESLint configuration
+## 📸 Screenshot
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+![AoE Codex Screenshot](https://via.placeholder.com/800x400?text=AoE+Codex+Screenshot)
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## ✨ Features
+
+- **Homepage**: A welcoming landing page with game overview and navigation.
+- **Units Page**:
+  - Displays a filterable and sortable table of Age of Empires II units.
+  - **Filtering**: Filter units by Age (Dark, Feudal, Castle, Imperial) and Resource Costs (Food, Wood, Gold) using interactive controls.
+  - **Sorting**: Clickable table headers to sort units by ID, Name, Age, or Cost.
+  - **Search**: Real-time client-side search functionality by unit name.
+  - **Pagination**: Efficiently browse through the list of units with customizable page size.
+  - **URL Synchronization**: Filter, sort, and pagination states are reflected in the URL parameters for shareable links and browser history navigation.
+- **Unit Detail Page**: View comprehensive details for a selected unit.
+- **Background Music**: Integrated background audio player with play/pause, mute, and volume controls for an better experience.
+- **Responsive Design**: Fully adaptive interface that works seamlessly on desktop, tablet, and mobile devices.
+- **Performance Optimized**: Fast loading times and smooth interactions.
+
+## 🛠️ Technologies Used
+
+- **Framework**: React 19
+- **Language**: TypeScript
+- **Build Tool**: Vite
+- **State Management**: Redux Toolkit with Redux-Saga for asynchronous actions
+- **Routing**: React Router v7 with route-based code splitting
+- **Table**: TanStack Table v8 for powerful, headless table functionality
+- **UI Components**: Radix UI (Slider, Checkbox, Label, Toggle Group) for accessible UI primitives
+- **Styling**: SCSS Modules for component-scoped styling
+- **Testing**: Vitest and React Testing Library for unit and integration tests
+- **Linting**: ESLint with custom configuration for code quality
+
+## 🚀 Setup and Installation
+
+1. **Clone the repository:**
+
+   ```bash
+   git clone <your-repository-url>
+   cd aoe-codex
+   ```
+
+2. **Install dependencies:**
+
+   ```bash
+   yarn install
+   # or
+   npm install
+   ```
+
+3. **Start the development server:**
+
+   ```bash
+   yarn dev
+   # or
+   npm run dev
+   ```
+
+4. **Open in browser:**
+   The application will be available at [http://localhost:5173](http://localhost:5173)
+
+## 📝 Available Scripts
+
+- **`yarn dev`**: Runs the app in development mode
+
+- **`yarn build`**: Builds the app for production to the `dist` folder.
+
+- **`yarn lint`**: Lints the project files using ESLint.
+
+- **`yarn preview`**: Serves the production build locally for previewing.
+
+- **`yarn test`**: Runs the unit and integration tests using Vitest in watch mode.
+
+- **`yarn test:ui`**: Runs tests with the Vitest UI for a graphical interface.
+
+- **`yarn coverage`**: Runs tests once and generates a code coverage report.
+
+## 📁 Project Structure
+
+```
+/src
+|-- assets          # Static assets like images, audio files
+|-- components      # Shared reusable components (Navigation, Icons, Spinner)
+|-- constants       # Application-wide constants (AGES, COST_TYPES)
+|-- data            # Static data files (e.g., age-of-empires-units.json)
+|-- features        # Components related to specific features
+|-- hooks           # Custom React hooks (useDebounce, useScrollToTop)
+|-- layouts         # Layout components (MainLayout)
+|-- routes          # Page-level components
+|-- store           # Redux store configuration, slices, and sagas
+|   |-- sagas
+|   |-- slices
+|   `-- store.ts
+|-- styles          # Global styles, variables, mixins
+|-- types           # TypeScript type definitions
+|-- App.tsx         # Main application component with routing setup
+|-- main.tsx        # Application entry point
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🧪 Testing
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+The project includes a comprehensive test suite using Vitest and React Testing Library. To run tests:
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```bash
+yarn test
 ```
+
+For a visual test interface:
+
+```bash
+yarn test:ui
+```
+
+## 📱 Responsive Design
+
+The application is fully responsive and works well on:
+
+- Desktop (1200px and above)
+- Tablet (768px to 1199px)
+- Mobile (320px to 767px)
