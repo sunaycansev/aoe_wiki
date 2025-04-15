@@ -8,7 +8,11 @@ Check out the live demo: [AoE Wiki](https://aoe-wiki-n2uc44gkn-sunaycansevs-proj
 
 ## 📸 Screenshot
 
-![AoE Codex Screenshot](https://via.placeholder.com/800x400?text=AoE+Codex+Screenshot)
+## ![AoE Wiki Screenshot](/public/assets/ss1.png)
+
+## ![AoE Wiki Screenshot](/public/assets/ss2.png)
+
+## ![AoE Wiki Screenshot](/public/assets/ss3.png)
 
 ## ✨ Features
 
