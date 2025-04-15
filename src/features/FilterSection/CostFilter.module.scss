@@ -1,0 +1,288 @@
+@use "sass:color";
+@use "sass:math";
+@use "../../styles/variables" as *;
+
+.costFilterContainer {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-unit * 2;
+}
+
+.filterHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $spacing-unit;
+  }
+}
+
+.filterLabel {
+  font-weight: 600;
+  margin: 0;
+}
+
+.resetButton {
+  background-color: transparent;
+  border: 1px solid $border-color;
+  color: $primary-color;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: math.div($spacing-unit, 1.5) $spacing-unit;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    text-align: center;
+  }
+
+  &:hover {
+    background-color: color.adjust($primary-color, $alpha: -0.9);
+    border-color: $primary-color;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+  }
+}
+
+.costItemsWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-unit * 2;
+}
+
+.costItemRow {
+  display: flex;
+  align-items: center;
+  gap: $spacing-unit * 2;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: $spacing-unit * 1.5;
+  }
+}
+
+.checkboxContainer {
+  display: flex;
+  align-items: center;
+  gap: $spacing-unit;
+  min-width: 80px;
+  margin-top: 0;
+
+  @media (max-width: 768px) {
+    min-width: unset;
+  }
+}
+
+.checkboxRoot {
+  all: unset;
+  background-color: $white;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid $border-color;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+
+  &:hover {
+    border-color: $primary-color;
+  }
+
+  &[data-state="checked"] {
+    background-color: $primary-color;
+    border-color: $primary-color;
+    color: $white;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+  }
+}
+
+.checkboxIndicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.checkboxLabel {
+  color: $text-color;
+  font-size: 1rem;
+  cursor: pointer;
+  user-select: none;
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+  }
+}
+
+.sliderAndRangeContainer {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-unit * 0.5;
+  width: 100%;
+
+  @media (min-width: 769px) {
+    flex-direction: row;
+    align-items: center;
+    gap: $spacing-unit * 2;
+  }
+}
+
+.sliderContainer {
+  flex: 1;
+  padding: 0 $spacing-unit;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: $spacing-unit;
+  overflow: hidden;
+  transition: opacity 0.2s ease-out;
+  width: 100%;
+
+  &[data-disabled] {
+    pointer-events: none;
+  }
+
+  @media (max-width: 768px) {
+    padding: 0;
+  }
+}
+
+.sliderRoot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  user-select: none;
+  touch-action: none;
+  width: 100%;
+  height: 20px;
+
+  &[data-disabled] {
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 768px) {
+    height: 30px;
+  }
+}
+
+.sliderTrack {
+  background-color: color.adjust($border-color, $lightness: 5%);
+  position: relative;
+  flex-grow: 1;
+  border-radius: 9999px;
+  height: 4px;
+
+  .sliderRoot[data-disabled] & {
+    background-color: color.adjust($border-color, $lightness: 10%);
+  }
+}
+
+.tickMarks {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100%;
+  pointer-events: none;
+}
+
+.tickMark {
+  position: absolute;
+  width: 1px;
+  height: 8px;
+  background-color: color.adjust($border-color, $lightness: 2%);
+  top: -2px;
+  transform: translateX(-50%);
+}
+
+.sliderRange {
+  position: absolute;
+  background-color: $primary-color;
+  border-radius: 9999px;
+  height: 100%;
+
+  .sliderRoot[data-disabled] & {
+    background-color: $border-color;
+  }
+}
+
+.sliderThumb {
+  all: unset;
+  display: block;
+  width: 16px;
+  height: 16px;
+  background-color: $primary-color;
+  border-radius: 50%;
+  cursor: grab;
+  border: 2px solid $white;
+  box-shadow: 0 1px 3px rgba($black, 0.2);
+  transition: transform 0.1s ease, background-color 0.2s ease;
+
+  .sliderRoot[data-disabled] & {
+    background-color: color.adjust($border-color, $lightness: -10%);
+    border-color: color.adjust($border-color, $lightness: 5%);
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 768px) {
+    width: 24px;
+    height: 24px;
+  }
+
+  &:hover {
+    .sliderRoot:not([data-disabled]) & {
+      background-color: color.adjust($primary-color, $lightness: -10%);
+      transform: scale(1.1);
+    }
+  }
+
+  &:active {
+    .sliderRoot:not([data-disabled]) & {
+      cursor: grabbing;
+      transform: scale(1.15);
+    }
+  }
+
+  &:focus-visible {
+    .sliderRoot:not([data-disabled]) & {
+      outline: 3px solid color.adjust($primary-color, $lightness: 30%);
+      outline-offset: 1px;
+    }
+  }
+}
+
+.rangeDisplay {
+  width: 80px;
+  font-size: 0.9rem;
+  color: color.adjust($text-color, $lightness: -10%);
+  text-align: left;
+  margin-top: 0;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    text-align: center;
+    font-size: 0.85rem;
+  }
+}
