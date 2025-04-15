@@ -30,7 +30,7 @@ jobs:
         run: yarn lint
 
       - name: Run formatting check
-        run: yarn prettier
+        run: npx prettier --check "src/**/*.{js,jsx,ts,tsx,scss,css,json}" --no-error-on-unmatched-pattern
 
       - name: Build project
         run: yarn build
