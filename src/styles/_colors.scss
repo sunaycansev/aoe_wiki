@@ -1,0 +1,17 @@
+@use "sass:color";
+
+$primary-color: #058488;
+$secondary-color: #8b4513;
+$background-color: #e1dbbf;
+$text-color: #2c1810;
+$link-color: #058488;
+$border-color: #a39770;
+$white: #ffffff;
+$black: #000000;
+$hover-color: color.adjust($primary-color, $lightness: -10%);
+$active-color: color.adjust($primary-color, $lightness: -15%);
+$disabled-color: #a39770;
+$error-color: #8b0000;
+$success-color: #2e5c1b;
+$surface-light: #f0efe4;
+$surface-dark: color.adjust($background-color, $lightness: -5%);
