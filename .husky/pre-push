@@ -3,4 +3,4 @@
 
 # Run build
 echo "🏗️ Running build..."
-npm run build || exit 1
+yarn build || exit 1
