@@ -35,7 +35,7 @@
   transition: background-color $transition-fast;
 
   &:hover {
-    background-color: darken($surface-dark, 5%);
+    background-color: color.adjust($surface-dark, $lightness: -5%);
   }
 
   @media (max-width: 768px) {
