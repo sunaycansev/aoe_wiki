@@ -7,6 +7,7 @@ import App from "./App.tsx";
 import { MainLayout } from "./layouts/MainLayout";
 import { store } from "./store/store";
 const HomePage = lazy(() => import("./routes/HomePage"));
+const UnitsPage = lazy(() => import("./routes/UnitsPage"));
 
 import "./styles/global.scss";
 
@@ -17,7 +18,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <MainLayout />,
-        children: [{ index: true, element: <HomePage /> }],
+        children: [
+          { index: true, element: <HomePage /> },
+          { path: "units", element: <UnitsPage /> },
+        ],
       },
     ],
   },

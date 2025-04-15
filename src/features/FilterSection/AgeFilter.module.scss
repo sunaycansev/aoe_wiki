@@ -1,0 +1,90 @@
+@use "sass:color";
+@use "../../styles/variables" as *;
+
+.ageFilterContainer {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-unit;
+}
+
+.filterLabel {
+  font-weight: 600;
+  margin-bottom: $spacing-unit * 0.5;
+}
+
+.toggleGroup {
+  display: inline-flex;
+  border: 1px solid $border-color;
+  border-radius: 4px;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border: none;
+    gap: $spacing-unit;
+  }
+}
+
+.toggleGroupItem {
+  background-color: $white;
+  color: $text-color;
+  padding: $spacing-unit $spacing-unit * 2;
+  border: none;
+  border-right: 1px solid $border-color;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  flex: 1;
+  min-width: 100px;
+  text-align: center;
+  white-space: nowrap;
+
+  @media (max-width: 768px) {
+    padding: $spacing-unit;
+    border: 1px solid $border-color;
+    border-radius: 4px;
+    width: 100%;
+    font-size: 1rem;
+    min-width: unset;
+
+    &:not(:last-child) {
+      margin-bottom: 0;
+    }
+  }
+
+  &:last-child {
+    border-right: none;
+  }
+
+  &:hover {
+    background-color: rgba($primary-color, 0.1);
+  }
+
+  &[data-state="on"] {
+    background-color: $primary-color;
+    color: $white;
+    border-color: $primary-color;
+
+    @media (max-width: 768px) {
+      border-color: $primary-color;
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-color;
+    outline-offset: -2px;
+    z-index: 1;
+  }
+
+  &[data-state="on"]:focus-visible {
+    outline-offset: -3px;
+  }
+}
+
+.radioInput {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
