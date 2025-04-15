@@ -7,4 +7,4 @@ npx lint-staged || exit 1
 
 # Run type checking
 echo "🔍 Running type checking..."
-npm run type-check || exit 1
+yarn type-check || exit 1
