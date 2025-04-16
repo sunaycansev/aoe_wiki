@@ -12,8 +12,6 @@ body {
   font-family: $body-font;
   font-size: $font-size-base;
   line-height: $line-height-relaxed;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   background-color: $background-color;
   color: $text-color;
 }
@@ -52,17 +50,6 @@ p {
   margin-bottom: 1rem;
 }
 
-h1 + p::first-letter,
-h2 + p::first-letter {
-  font-size: 1.5em;
-  font-weight: $font-weight-bold;
-  color: $primary-color;
-  float: left;
-  line-height: 1;
-  padding-right: 0.1em;
-  margin-top: 0.1em;
-}
-
 a {
   color: $primary-color;
   text-decoration: none;
@@ -72,27 +59,4 @@ a {
 a:hover {
   color: $hover-color;
   text-decoration: underline;
-}
-
-hr {
-  border: none;
-  height: 1px;
-  background-image: linear-gradient(
-    to right,
-    rgba($border-color, 0),
-    rgba($border-color, 0.75),
-    rgba($border-color, 0)
-  );
-  margin: 2rem 0;
-}
-
-:root {
-  --primary-color: #3498db;
-  --secondary-color: #2ecc71;
-  --background-color: #f8f9fa;
-  --text-color: #212529;
-  --link-color: #007bff;
-  --border-color: #dee2e6;
-  --white: #ffffff;
-  --black: #000000;
 }

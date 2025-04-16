@@ -23,11 +23,6 @@
   &:active {
     background-color: color.adjust($surface-dark, $lightness: -5%);
   }
-
-  &:focus-visible {
-    outline: 2px solid $primary-color;
-    outline-offset: 2px;
-  }
 }
 
 @mixin page-title-style {
