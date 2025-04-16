@@ -1,3 +1,4 @@
+import { SortingState } from "@tanstack/react-table";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
@@ -37,6 +38,19 @@ const UnitsPage = () => {
 
   const [initialSyncDone, setInitialSyncDone] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+
+  const currentSort = useMemo(() => {
+    const sortParam = searchParams.get(URL_PARAMS.SORT);
+    if (sortParam) {
+      try {
+        return JSON.parse(sortParam);
+      } catch (e) {
+        console.error("Error parsing sort parameter from URL:", e);
+      }
+    }
+    return [];
+  }, [searchParams]);
 
   useEffect(() => {
     if (initialSyncDone) return;
@@ -61,65 +75,78 @@ const UnitsPage = () => {
       }),
     );
 
+    const search = searchParams.get(URL_PARAMS.SEARCH) || "";
+    setSearchValue(search);
+
     setInitialSyncDone(true);
   }, [dispatch, searchParams, initialSyncDone]);
+
+  const updateUrl = useCallback(
+    (params: {
+      age?: Age;
+      costs?: CostFilters;
+      sort?: SortingState;
+      search?: string;
+    }) => {
+      if (!initialSyncDone) return;
+
+      const newSearchParams = new URLSearchParams(searchParams);
+
+      if (params.age !== undefined) {
+        if (params.age === "All") {
+          newSearchParams.delete(URL_PARAMS.AGE);
+        } else {
+          newSearchParams.set(URL_PARAMS.AGE, params.age);
+        }
+      }
+
+      if (params.costs) {
+        COST_TYPES.forEach((type) => {
+          const paramKey =
+            type === "Wood"
+              ? URL_PARAMS.WOOD
+              : type === "Food"
+                ? URL_PARAMS.FOOD
+                : URL_PARAMS.GOLD;
+
+          const range = params.costs![type];
+          if (range) {
+            newSearchParams.set(paramKey, `${range[0]}-${range[1]}`);
+          } else {
+            newSearchParams.delete(paramKey);
+          }
+        });
+      }
+
+      if (params.sort !== undefined) {
+        if (params.sort.length > 0) {
+          newSearchParams.set(URL_PARAMS.SORT, JSON.stringify(params.sort));
+        } else {
+          newSearchParams.delete(URL_PARAMS.SORT);
+        }
+      }
+
+      if (params.search !== undefined) {
+        if (params.search) {
+          newSearchParams.set(URL_PARAMS.SEARCH, params.search);
+        } else {
+          newSearchParams.delete(URL_PARAMS.SEARCH);
+        }
+      }
+
+      setSearchParams(newSearchParams);
+    },
+    [searchParams, setSearchParams, initialSyncDone],
+  );
 
   useEffect(() => {
     if (!initialSyncDone || isResetting) return;
 
-    const newSearchParams = new URLSearchParams(searchParams);
-
-    if (selectedAge === "All") {
-      newSearchParams.delete(URL_PARAMS.AGE);
-    } else {
-      newSearchParams.set(URL_PARAMS.AGE, selectedAge);
-    }
-
-    COST_TYPES.forEach((type) => {
-      const paramKey =
-        type === "Wood"
-          ? URL_PARAMS.WOOD
-          : type === "Food"
-            ? URL_PARAMS.FOOD
-            : URL_PARAMS.GOLD;
-
-      const range = costFilters[type];
-      if (range) {
-        newSearchParams.set(paramKey, `${range[0]}-${range[1]}`);
-      } else {
-        newSearchParams.delete(paramKey);
-      }
+    updateUrl({
+      age: selectedAge,
+      costs: costFilters,
     });
-
-    const page = searchParams.get(URL_PARAMS.PAGE);
-    if (page) {
-      newSearchParams.set(URL_PARAMS.PAGE, page);
-    }
-
-    const size = searchParams.get(URL_PARAMS.SIZE);
-    if (size) {
-      newSearchParams.set(URL_PARAMS.SIZE, size);
-    }
-
-    const sort = searchParams.get(URL_PARAMS.SORT);
-    if (sort) {
-      newSearchParams.set(URL_PARAMS.SORT, sort);
-    }
-
-    const search = searchParams.get(URL_PARAMS.SEARCH);
-    if (search) {
-      newSearchParams.set(URL_PARAMS.SEARCH, search);
-    }
-
-    setSearchParams(newSearchParams, { replace: true });
-  }, [
-    selectedAge,
-    costFilters,
-    initialSyncDone,
-    searchParams,
-    setSearchParams,
-    isResetting,
-  ]);
+  }, [selectedAge, costFilters, updateUrl, initialSyncDone, isResetting]);
 
   const handleAgeChange = useCallback(
     (newAge: Age) => {
@@ -135,22 +162,27 @@ const UnitsPage = () => {
     [dispatch],
   );
 
+  const handleSortingChange = useCallback(
+    (sorting: SortingState) => {
+      updateUrl({ sort: sorting });
+    },
+    [updateUrl],
+  );
+
+  const handleSearchChange = useCallback(
+    (search: string) => {
+      setSearchValue(search);
+      updateUrl({ search });
+    },
+    [updateUrl],
+  );
+
   const handleResetFilters = useCallback(() => {
     setIsResetting(true);
 
     dispatch(resetFilters());
 
     const newSearchParams = new URLSearchParams();
-
-    const page = searchParams.get(URL_PARAMS.PAGE);
-    if (page) {
-      newSearchParams.set(URL_PARAMS.PAGE, page);
-    }
-
-    const size = searchParams.get(URL_PARAMS.SIZE);
-    if (size) {
-      newSearchParams.set(URL_PARAMS.SIZE, size);
-    }
 
     const sort = searchParams.get(URL_PARAMS.SORT);
     if (sort) {
@@ -162,7 +194,7 @@ const UnitsPage = () => {
       newSearchParams.set(URL_PARAMS.SEARCH, search);
     }
 
-    setSearchParams(newSearchParams, { replace: true });
+    setSearchParams(newSearchParams);
 
     setTimeout(() => {
       setIsResetting(false);
@@ -241,6 +273,10 @@ const UnitsPage = () => {
           <UnitsTable
             units={filteredUnits}
             onFilteredCountChange={handleTableFilteredCountChange}
+            initialSort={currentSort}
+            initialSearch={searchValue}
+            onSortingChange={handleSortingChange}
+            onSearchChange={handleSearchChange}
           />
         )}
 

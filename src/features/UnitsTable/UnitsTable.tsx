@@ -4,17 +4,16 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  PaginationState,
+  OnChangeFn,
   SortingState,
-  Updater,
   useReactTable,
 } from "@tanstack/react-table";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { useDebounce } from "@/hooks/useDebounce";
 
-import { COST_TYPES, CostType, URL_PARAMS } from "../../constants";
+import { COST_TYPES, CostType } from "../../constants";
 import { Unit } from "../../types/units";
 import { TableBody } from "./TableBody";
 import { TableHeader } from "./TableHeader";
@@ -25,88 +24,48 @@ import styles from "./UnitsTable.module.scss";
 interface UnitsTableProps {
   units: Unit[];
   onFilteredCountChange?: (count: number) => void;
+  initialSort: SortingState;
+  initialSearch: string;
+  onSortingChange: (sorting: SortingState) => void;
+  onSearchChange: (search: string) => void;
 }
 
 export const UnitsTable = ({
   units,
   onFilteredCountChange,
+  initialSort,
+  initialSearch,
+  onSortingChange,
+  onSearchChange,
 }: UnitsTableProps) => {
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
 
-  const derivedSorting = useMemo((): SortingState => {
-    const sortParam = searchParams.get(URL_PARAMS.SORT);
-    if (sortParam) {
-      try {
-        return JSON.parse(sortParam);
-      } catch (e) {
-        console.error("Error parsing sort parameter from URL:", e);
-      }
-    }
-    return [];
-  }, [searchParams]);
+  const [sorting, setSorting] = useState<SortingState>(initialSort);
 
-  const derivedPagination = useMemo((): PaginationState => {
-    const pageIndex = parseInt(searchParams.get(URL_PARAMS.PAGE) || "0", 10);
-    const pageSizeParam = parseInt(
-      searchParams.get(URL_PARAMS.SIZE) || "20",
-      10,
-    );
-    const pageSize = pageSizeParam;
-    return { pageIndex: Math.max(0, pageIndex), pageSize };
-  }, [searchParams]);
+  useEffect(() => {
+    setSorting(initialSort);
+  }, [initialSort]);
 
-  const initialGlobalFilter = useMemo(() => {
-    return searchParams.get(URL_PARAMS.SEARCH) || "";
-  }, [searchParams]);
-
-  const [searchValue, setSearchValue] = useState(initialGlobalFilter);
+  const [searchValue, setSearchValue] = useState(initialSearch);
   const debouncedSearchValue = useDebounce(searchValue, 300);
 
-  const handlePaginationChange = useCallback(
-    (updater: Updater<PaginationState>) => {
-      const currentPagination = derivedPagination;
-      const newPagination =
-        typeof updater === "function" ? updater(currentPagination) : updater;
+  const handleSortingChange = useCallback<OnChangeFn<SortingState>>(
+    (updaterOrValue) => {
+      setSorting(updaterOrValue);
 
-      if (
-        newPagination.pageIndex !== currentPagination.pageIndex ||
-        newPagination.pageSize !== currentPagination.pageSize
-      ) {
-        const newSearchParams = new URLSearchParams(searchParams);
-        newSearchParams.set(
-          URL_PARAMS.PAGE,
-          newPagination.pageIndex.toString(),
-        );
-        newSearchParams.set(URL_PARAMS.SIZE, newPagination.pageSize.toString());
-        setSearchParams(newSearchParams, { replace: true });
+      if (typeof updaterOrValue === "function") {
+        const newValue = updaterOrValue(sorting);
+        onSortingChange(newValue);
+      } else {
+        onSortingChange(updaterOrValue);
       }
     },
-    [searchParams, setSearchParams, derivedPagination],
-  );
-
-  const handleSortingChange = useCallback(
-    (updater: Updater<SortingState>) => {
-      const currentSorting = derivedSorting;
-      const newSorting =
-        typeof updater === "function" ? updater(currentSorting) : updater;
-
-      if (JSON.stringify(newSorting) !== JSON.stringify(currentSorting)) {
-        const newSearchParams = new URLSearchParams(searchParams);
-        if (newSorting.length > 0) {
-          newSearchParams.set(URL_PARAMS.SORT, JSON.stringify(newSorting));
-        } else {
-          newSearchParams.delete(URL_PARAMS.SORT);
-        }
-        setSearchParams(newSearchParams, { replace: true });
-      }
-    },
-    [searchParams, setSearchParams, derivedSorting],
+    [sorting, onSortingChange],
   );
 
   useEffect(() => {
-    setSearchValue(initialGlobalFilter);
-  }, [initialGlobalFilter]);
+    setSearchValue(initialSearch);
+  }, [initialSearch]);
 
   const handleRowClick = useCallback(
     (unit: Unit) => {
@@ -122,6 +81,12 @@ export const UnitsTable = ({
   const handleClearSearch = () => {
     setSearchValue("");
   };
+
+  useEffect(() => {
+    if (debouncedSearchValue !== initialSearch) {
+      onSearchChange(debouncedSearchValue);
+    }
+  }, [debouncedSearchValue, initialSearch, onSearchChange]);
 
   const renderDetailedCosts = (cost: Unit["cost"]) => {
     if (!cost) {
@@ -199,14 +164,10 @@ export const UnitsTable = ({
     data: units,
     columns,
     state: {
-      sorting: derivedSorting,
-      pagination: derivedPagination,
+      sorting,
       globalFilter: debouncedSearchValue,
     },
-    onPaginationChange: handlePaginationChange,
     onSortingChange: handleSortingChange,
-    manualPagination: false,
-    manualSorting: false,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -216,19 +177,14 @@ export const UnitsTable = ({
       const unit = row.original;
       return unit.name.toLowerCase().includes(searchValue);
     },
+    autoResetPageIndex: true,
+    initialState: {
+      pagination: {
+        pageIndex: 0,
+        pageSize: 20,
+      },
+    },
   });
-
-  useEffect(() => {
-    const newSearchParams = new URLSearchParams(searchParams);
-    if (debouncedSearchValue) {
-      newSearchParams.set(URL_PARAMS.SEARCH, debouncedSearchValue);
-    } else {
-      newSearchParams.delete(URL_PARAMS.SEARCH);
-    }
-    if (searchParams.get(URL_PARAMS.SEARCH) !== debouncedSearchValue) {
-      setSearchParams(newSearchParams, { replace: true });
-    }
-  }, [debouncedSearchValue, searchParams, setSearchParams]);
 
   const { pageIndex, pageSize } = table.getState().pagination;
   const totalItems = table.getFilteredRowModel().rows.length;

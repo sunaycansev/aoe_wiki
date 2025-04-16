@@ -1,3 +1,4 @@
+import { SortingState } from "@tanstack/react-table";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -6,13 +7,13 @@ import { Unit } from "../../types/units";
 import { UnitsTable } from "./UnitsTable";
 
 const mockNavigate = vi.fn();
-const mockSetSearchParams = vi.fn();
-let currentSearchParams = new URLSearchParams();
+
+const mockOnSortingChange = vi.fn();
+const mockOnSearchChange = vi.fn();
 
 vi.mock("react-router-dom", async () => {
   return {
     useNavigate: () => mockNavigate,
-    useSearchParams: () => [currentSearchParams, mockSetSearchParams],
   };
 });
 
@@ -53,18 +54,21 @@ describe("UnitsTable Component", () => {
 
   const onFilteredCountChangeMock = vi.fn();
 
+  const defaultProps = {
+    units: mockUnits,
+    onFilteredCountChange: onFilteredCountChangeMock,
+    initialSort: [] as SortingState,
+    initialSearch: "",
+    onSortingChange: mockOnSortingChange,
+    onSearchChange: mockOnSearchChange,
+  };
+
   beforeEach(() => {
     vi.clearAllMocks();
-    currentSearchParams = new URLSearchParams();
   });
 
   it("should render the table with units data", () => {
-    render(
-      <UnitsTable
-        units={mockUnits}
-        onFilteredCountChange={onFilteredCountChangeMock}
-      />,
-    );
+    render(<UnitsTable {...defaultProps} />);
 
     const table = screen.getByTestId("units-table");
     expect(table).toBeInTheDocument();
@@ -81,51 +85,28 @@ describe("UnitsTable Component", () => {
 
   it("should filter units when search input changes", async () => {
     const user = userEvent.setup();
-    render(
-      <UnitsTable
-        units={mockUnits}
-        onFilteredCountChange={onFilteredCountChangeMock}
-      />,
-    );
+    render(<UnitsTable {...defaultProps} />);
 
     const searchInput = screen.getByPlaceholderText(/search units by name/i);
     await user.type(searchInput, "Knight");
 
-    expect(mockSetSearchParams).toHaveBeenCalledWith(
-      expect.objectContaining(new URLSearchParams({ search: "Knight" })),
-      expect.anything(),
-    );
+    expect(mockOnSearchChange).toHaveBeenCalledWith("Knight");
   });
 
   it("should clear search when clear button is clicked", async () => {
     const user = userEvent.setup();
 
-    currentSearchParams.set("search", "Knight");
-
-    render(
-      <UnitsTable
-        units={mockUnits}
-        onFilteredCountChange={onFilteredCountChangeMock}
-      />,
-    );
+    render(<UnitsTable {...defaultProps} initialSearch="Knight" />);
 
     const clearButton = screen.getByRole("button", { name: /clear search/i });
     await user.click(clearButton);
 
-    expect(mockSetSearchParams).toHaveBeenCalledWith(
-      expect.objectContaining(new URLSearchParams()),
-      expect.anything(),
-    );
+    expect(mockOnSearchChange).toHaveBeenCalledWith("");
   });
 
   it("should navigate to unit detail page when row is clicked", async () => {
     const user = userEvent.setup();
-    render(
-      <UnitsTable
-        units={mockUnits}
-        onFilteredCountChange={onFilteredCountChangeMock}
-      />,
-    );
+    render(<UnitsTable {...defaultProps} />);
 
     const rowButtons = screen.getAllByRole("button");
     expect(rowButtons.length).toBeGreaterThan(0);
@@ -135,7 +116,7 @@ describe("UnitsTable Component", () => {
     expect(mockNavigate).toHaveBeenCalledWith("/units/1");
   });
 
-  it("should update URL when pagination controls are used", async () => {
+  it("should handle pagination locally", async () => {
     const manyUnits = Array.from({ length: 25 }, (_, index) => ({
       id: index + 1,
       name: `Unit ${index + 1}`,
@@ -154,14 +135,7 @@ describe("UnitsTable Component", () => {
 
     const user = userEvent.setup();
 
-    mockSetSearchParams.mockClear();
-
-    render(
-      <UnitsTable
-        units={manyUnits}
-        onFilteredCountChange={onFilteredCountChangeMock}
-      />,
-    );
+    render(<UnitsTable {...defaultProps} units={manyUnits} />);
 
     expect(
       screen.getByText(/showing 1 to \d+ of 25 units/i),
@@ -174,22 +148,12 @@ describe("UnitsTable Component", () => {
 
     await user.click(nextPageButton);
 
-    expect(mockSetSearchParams).toHaveBeenCalled();
-
-    const lastCallArgs =
-      mockSetSearchParams.mock.calls[mockSetSearchParams.mock.calls.length - 1];
-    const updatedParams = lastCallArgs[0];
-
-    expect(updatedParams.get("page")).toBe("1");
+    const pageInfo = screen.getByText(/page 2 of/i);
+    expect(pageInfo).toBeInTheDocument();
   });
 
   it("should notify parent component of filtered count", () => {
-    render(
-      <UnitsTable
-        units={mockUnits}
-        onFilteredCountChange={onFilteredCountChangeMock}
-      />,
-    );
+    render(<UnitsTable {...defaultProps} />);
 
     expect(onFilteredCountChangeMock).toHaveBeenCalledWith(3);
   });
