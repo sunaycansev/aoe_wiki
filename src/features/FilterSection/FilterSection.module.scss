@@ -115,11 +115,6 @@
     background-color: color.adjust($primary-color, $alpha: -0.9);
     border-color: $primary-color;
   }
-
-  &:focus-visible {
-    outline: 2px solid $primary-color;
-    outline-offset: 2px;
-  }
 }
 
 .srOnly {

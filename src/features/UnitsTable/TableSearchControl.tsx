@@ -26,7 +26,6 @@ export const TableSearchControl = ({
           onChange={onChange}
           placeholder={placeholder}
           className={styles.searchInput}
-          aria-label={placeholder}
         />
         {value && (
           <button

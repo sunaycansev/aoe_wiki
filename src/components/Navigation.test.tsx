@@ -41,7 +41,6 @@ vi.mock("../store/slices/audioSlice", () => ({
 
 describe("Navigation Component", () => {
   const renderNavigation = (isPlaying = false, volume = 0.5) => {
-    // Set up mock return values
     vi.mocked(useSelector).mockReturnValue({ isPlaying, volume });
 
     return render(
@@ -145,7 +144,7 @@ describe("Navigation Component", () => {
 
     const slider = screen.getByRole("slider", { name: /volume control/i });
     expect(slider).toBeInTheDocument();
-    expect(slider).toHaveAttribute("aria-valuenow", "70"); // 0.7 * 100
+    expect(slider).toHaveAttribute("aria-valuenow", "70");
   });
 
   it("should dispatch setVolume action when slider value changes", () => {

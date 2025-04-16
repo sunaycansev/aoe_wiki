@@ -26,13 +26,6 @@ export const TableHeader = <TData,>({
                 header.column.getCanSort() ? styles.sortableHeader : ""
               }`}
               style={header.column.getCanSort() ? { cursor: "pointer" } : {}}
-              aria-sort={
-                header.column.getIsSorted() === "asc"
-                  ? "ascending"
-                  : header.column.getIsSorted() === "desc"
-                    ? "descending"
-                    : "none"
-              }
             >
               {header.isPlaceholder
                 ? null
@@ -42,8 +35,8 @@ export const TableHeader = <TData,>({
                   )}
               <span className={styles.sortIndicator}>
                 {{
-                  asc: " ▲",
-                  desc: " ▼",
+                  asc: "↑",
+                  desc: "↓",
                 }[header.column.getIsSorted() as string] ?? null}
               </span>
             </th>

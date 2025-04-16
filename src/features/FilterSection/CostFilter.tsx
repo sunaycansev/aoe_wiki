@@ -120,12 +120,12 @@ export const CostFilter: React.FC<CostFilterProps> = ({
                     disabled={!isActive}
                   >
                     <Slider.Track className={styles.sliderTrack}>
-                      <div className={styles.tickMarks}>
+                      <div className={styles.sliderTickMarks}>
                         {[0, 25, 50, 75, 100, 125, 150, 175, 200].map(
                           (tick) => (
                             <div
                               key={tick}
-                              className={styles.tickMark}
+                              className={styles.sliderTickMark}
                               style={{ left: `${(tick / MAX_COST) * 100}%` }}
                               aria-hidden="true"
                             />
@@ -145,7 +145,7 @@ export const CostFilter: React.FC<CostFilterProps> = ({
                   </Slider.Root>
                 </div>
 
-                <div className={styles.rangeDisplay} aria-live="polite">
+                <div className={styles.rangeDisplay}>
                   {`${displayRange[0]}-${displayRange[1]}`}
                 </div>
               </div>

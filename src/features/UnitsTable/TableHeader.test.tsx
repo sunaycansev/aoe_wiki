@@ -92,14 +92,5 @@ describe("TableHeader Component", () => {
       "colSpan",
       "2",
     );
-
-    expect(screen.getByRole("columnheader", { name: "ID" })).toHaveAttribute(
-      "aria-sort",
-      "none",
-    );
-    expect(screen.getByRole("columnheader", { name: "Age" })).toHaveAttribute(
-      "aria-sort",
-      "none",
-    );
   });
 });

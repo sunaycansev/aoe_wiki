@@ -30,10 +30,7 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
   totalCount,
 }) => {
   return (
-    <section
-      className={styles.filterSectionContainer}
-      aria-labelledby="filter-heading"
-    >
+    <section className={styles.filterSectionContainer}>
       <div className={styles.filterHeader}>
         <div className={styles.filterHeaderLeft}>
           <h2 id="filter-heading" className={styles.filterHeading}>
