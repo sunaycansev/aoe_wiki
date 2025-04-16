@@ -122,6 +122,10 @@ For a visual test interface:
 yarn test:ui
 ```
 
+## Code Coverage Report
+
+![Cove Coverage Report](/public/assets/coverage.png)
+
 ## 📱 Responsive Design
 
 The application is fully responsive and works well on:
