@@ -3,8 +3,6 @@ import * as Label from "@radix-ui/react-label";
 import * as Slider from "@radix-ui/react-slider";
 import React, { useEffect, useState } from "react";
 
-import { CostFilters } from "@/types/filter";
-
 import { CheckIcon } from "../../components/Icons";
 import {
   COST_TYPES,
@@ -13,6 +11,7 @@ import {
   MIN_COST,
   STEP_COST,
 } from "../../constants";
+import { CostFilters } from "../../types/filter";
 import styles from "./CostFilter.module.scss";
 
 export interface CostFilterProps {
@@ -145,7 +144,7 @@ export const CostFilter: React.FC<CostFilterProps> = ({
                   </Slider.Root>
                 </div>
 
-                <div className={styles.rangeDisplay}>
+                <div className={styles.rangeDisplay} aria-live="polite">
                   {`${displayRange[0]}-${displayRange[1]}`}
                 </div>
               </div>
