@@ -14,7 +14,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { useDebounce } from "@/hooks/useDebounce";
 
-import { COST_TYPES, CostType } from "../../constants";
+import { COST_TYPES, CostType, URL_PARAMS } from "../../constants";
 import { Unit } from "../../types/units";
 import { TableBody } from "./TableBody";
 import { TableHeader } from "./TableHeader";
@@ -35,7 +35,7 @@ export const UnitsTable = ({
   const [searchParams, setSearchParams] = useSearchParams();
 
   const derivedSorting = useMemo((): SortingState => {
-    const sortParam = searchParams.get("sort");
+    const sortParam = searchParams.get(URL_PARAMS.SORT);
     if (sortParam) {
       try {
         return JSON.parse(sortParam);
@@ -47,14 +47,17 @@ export const UnitsTable = ({
   }, [searchParams]);
 
   const derivedPagination = useMemo((): PaginationState => {
-    const pageIndex = parseInt(searchParams.get("page") || "0", 10);
-    const pageSizeParam = parseInt(searchParams.get("size") || "20", 10);
+    const pageIndex = parseInt(searchParams.get(URL_PARAMS.PAGE) || "0", 10);
+    const pageSizeParam = parseInt(
+      searchParams.get(URL_PARAMS.SIZE) || "20",
+      10,
+    );
     const pageSize = pageSizeParam;
     return { pageIndex: Math.max(0, pageIndex), pageSize };
   }, [searchParams]);
 
   const initialGlobalFilter = useMemo(() => {
-    return searchParams.get("search") || "";
+    return searchParams.get(URL_PARAMS.SEARCH) || "";
   }, [searchParams]);
 
   const [searchValue, setSearchValue] = useState(initialGlobalFilter);
@@ -71,8 +74,11 @@ export const UnitsTable = ({
         newPagination.pageSize !== currentPagination.pageSize
       ) {
         const newSearchParams = new URLSearchParams(searchParams);
-        newSearchParams.set("page", newPagination.pageIndex.toString());
-        newSearchParams.set("size", newPagination.pageSize.toString());
+        newSearchParams.set(
+          URL_PARAMS.PAGE,
+          newPagination.pageIndex.toString(),
+        );
+        newSearchParams.set(URL_PARAMS.SIZE, newPagination.pageSize.toString());
         setSearchParams(newSearchParams, { replace: true });
       }
     },
@@ -88,9 +94,9 @@ export const UnitsTable = ({
       if (JSON.stringify(newSorting) !== JSON.stringify(currentSorting)) {
         const newSearchParams = new URLSearchParams(searchParams);
         if (newSorting.length > 0) {
-          newSearchParams.set("sort", JSON.stringify(newSorting));
+          newSearchParams.set(URL_PARAMS.SORT, JSON.stringify(newSorting));
         } else {
-          newSearchParams.delete("sort");
+          newSearchParams.delete(URL_PARAMS.SORT);
         }
         setSearchParams(newSearchParams, { replace: true });
       }
@@ -215,11 +221,11 @@ export const UnitsTable = ({
   useEffect(() => {
     const newSearchParams = new URLSearchParams(searchParams);
     if (debouncedSearchValue) {
-      newSearchParams.set("search", debouncedSearchValue);
+      newSearchParams.set(URL_PARAMS.SEARCH, debouncedSearchValue);
     } else {
-      newSearchParams.delete("search");
+      newSearchParams.delete(URL_PARAMS.SEARCH);
     }
-    if (searchParams.get("search") !== debouncedSearchValue) {
+    if (searchParams.get(URL_PARAMS.SEARCH) !== debouncedSearchValue) {
       setSearchParams(newSearchParams, { replace: true });
     }
   }, [debouncedSearchValue, searchParams, setSearchParams]);

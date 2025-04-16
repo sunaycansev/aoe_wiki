@@ -13,4 +13,8 @@ export const URL_PARAMS = {
   WOOD: "wood",
   FOOD: "food",
   GOLD: "gold",
+  PAGE: "page",
+  SIZE: "size",
+  SORT: "sort",
+  SEARCH: "search",
 } as const;

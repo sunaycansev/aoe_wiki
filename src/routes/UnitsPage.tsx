@@ -91,24 +91,24 @@ const UnitsPage = () => {
       }
     });
 
-    const page = searchParams.get("page");
+    const page = searchParams.get(URL_PARAMS.PAGE);
     if (page) {
-      newSearchParams.set("page", page);
+      newSearchParams.set(URL_PARAMS.PAGE, page);
     }
 
-    const size = searchParams.get("size");
+    const size = searchParams.get(URL_PARAMS.SIZE);
     if (size) {
-      newSearchParams.set("size", size);
+      newSearchParams.set(URL_PARAMS.SIZE, size);
     }
 
-    const sort = searchParams.get("sort");
+    const sort = searchParams.get(URL_PARAMS.SORT);
     if (sort) {
-      newSearchParams.set("sort", sort);
+      newSearchParams.set(URL_PARAMS.SORT, sort);
     }
 
-    const search = searchParams.get("search");
+    const search = searchParams.get(URL_PARAMS.SEARCH);
     if (search) {
-      newSearchParams.set("search", search);
+      newSearchParams.set(URL_PARAMS.SEARCH, search);
     }
 
     setSearchParams(newSearchParams, { replace: true });
@@ -142,24 +142,24 @@ const UnitsPage = () => {
 
     const newSearchParams = new URLSearchParams();
 
-    const page = searchParams.get("page");
+    const page = searchParams.get(URL_PARAMS.PAGE);
     if (page) {
-      newSearchParams.set("page", page);
+      newSearchParams.set(URL_PARAMS.PAGE, page);
     }
 
-    const size = searchParams.get("size");
+    const size = searchParams.get(URL_PARAMS.SIZE);
     if (size) {
-      newSearchParams.set("size", size);
+      newSearchParams.set(URL_PARAMS.SIZE, size);
     }
 
-    const sort = searchParams.get("sort");
+    const sort = searchParams.get(URL_PARAMS.SORT);
     if (sort) {
-      newSearchParams.set("sort", sort);
+      newSearchParams.set(URL_PARAMS.SORT, sort);
     }
 
-    const search = searchParams.get("search");
+    const search = searchParams.get(URL_PARAMS.SEARCH);
     if (search) {
-      newSearchParams.set("search", search);
+      newSearchParams.set(URL_PARAMS.SEARCH, search);
     }
 
     setSearchParams(newSearchParams, { replace: true });
