@@ -46,7 +46,7 @@ const mockUnit3NullCost: Unit = {
   age: "Castle",
   cost: null,
   hit_points: 45,
-}; // Has null cost
+};
 const mockUnit4MissingCost: Unit = {
   id: 4,
   name: "Trade Cog",
