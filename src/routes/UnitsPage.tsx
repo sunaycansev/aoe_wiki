@@ -1,51 +1,30 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 
 import { Spinner } from "@/components/Spinner";
-import {
-  Age,
-  AGES,
-  COST_TYPES,
-  CostType,
-  MAX_COST,
-  MIN_COST,
-  URL_PARAMS,
-} from "@/constants";
+import { Age, COST_TYPES, CostType, URL_PARAMS } from "@/constants";
 import { FilterSection } from "@/features/FilterSection/FilterSection";
 import { UnitsTable } from "@/features/UnitsTable/UnitsTable";
+import {
+  selectCostFilters,
+  selectSelectedAge,
+} from "@/store/selectors/filterSelectors";
+import {
+  resetFilters,
+  setAge,
+  setCostFilter,
+  syncFiltersFromUrl,
+} from "@/store/slices/filtersSlice";
 import { RootState } from "@/store/store";
 import { CostFilters } from "@/types/filter";
 import { Unit } from "@/types/units";
+import { parseAgeParam, parseCostParam } from "@/utils/utils";
 
 import styles from "./UnitsPage.module.scss";
 
-const parseAgeParam = (param: string | null): Age => {
-  if (!param) return "All";
-  const lowerParam = param.toLowerCase();
-  const matchedAge = AGES.find((age) => age.toLowerCase() === lowerParam);
-  return matchedAge || "All";
-};
-
-const parseCostParam = (param: string | null): [number, number] | null => {
-  if (!param) return null;
-  const parts = param.split("-");
-  if (parts.length !== 2) return null;
-  const min = parseInt(parts[0], 10);
-  const max = parseInt(parts[1], 10);
-  if (
-    isNaN(min) ||
-    isNaN(max) ||
-    min < MIN_COST ||
-    max > MAX_COST ||
-    min > max
-  ) {
-    return null;
-  }
-  return [min, max];
-};
-
 const UnitsPage = () => {
+  const dispatch = useDispatch();
   const {
     data: allUnits,
     loading,
@@ -53,13 +32,17 @@ const UnitsPage = () => {
   } = useSelector((state: RootState) => state.units);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const selectedAge = useMemo(
-    () => parseAgeParam(searchParams.get(URL_PARAMS.AGE)),
-    [searchParams],
-  );
+  const selectedAge = useSelector(selectSelectedAge);
+  const costFilters = useSelector(selectCostFilters);
 
-  const costFilters = useMemo(() => {
-    const filters: CostFilters = {};
+  const [initialSyncDone, setInitialSyncDone] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
+
+  useEffect(() => {
+    if (initialSyncDone) return;
+
+    const ageFromUrl = parseAgeParam(searchParams.get(URL_PARAMS.AGE));
+    const costFiltersFromUrl: CostFilters = {};
 
     COST_TYPES.forEach((type) => {
       const paramKey =
@@ -68,28 +51,31 @@ const UnitsPage = () => {
           : type === "Food"
             ? URL_PARAMS.FOOD
             : URL_PARAMS.GOLD;
-      filters[type] = parseCostParam(searchParams.get(paramKey));
+      costFiltersFromUrl[type] = parseCostParam(searchParams.get(paramKey));
     });
 
-    return filters;
-  }, [searchParams]);
+    dispatch(
+      syncFiltersFromUrl({
+        selectedAge: ageFromUrl,
+        costFilters: costFiltersFromUrl,
+      }),
+    );
 
-  const handleAgeChange = useCallback(
-    (newAge: Age) => {
-      const newSearchParams = new URLSearchParams(searchParams);
-      if (newAge === "All") {
-        newSearchParams.delete(URL_PARAMS.AGE);
-      } else {
-        newSearchParams.set(URL_PARAMS.AGE, newAge);
-      }
-      setSearchParams(newSearchParams, { replace: true });
-    },
-    [searchParams, setSearchParams],
-  );
+    setInitialSyncDone(true);
+  }, [dispatch, searchParams, initialSyncDone]);
 
-  const handleCostChange = useCallback(
-    (type: CostType, value: [number, number] | null) => {
-      const newSearchParams = new URLSearchParams(searchParams);
+  useEffect(() => {
+    if (!initialSyncDone || isResetting) return;
+
+    const newSearchParams = new URLSearchParams(searchParams);
+
+    if (selectedAge === "All") {
+      newSearchParams.delete(URL_PARAMS.AGE);
+    } else {
+      newSearchParams.set(URL_PARAMS.AGE, selectedAge);
+    }
+
+    COST_TYPES.forEach((type) => {
       const paramKey =
         type === "Wood"
           ? URL_PARAMS.WOOD
@@ -97,27 +83,61 @@ const UnitsPage = () => {
             ? URL_PARAMS.FOOD
             : URL_PARAMS.GOLD;
 
-      const currentValue = searchParams.get(paramKey);
-
-      if (value === null) {
-        if (currentValue !== null) {
-          newSearchParams.delete(paramKey);
-          setSearchParams(newSearchParams, { replace: true });
-        }
+      const range = costFilters[type];
+      if (range) {
+        newSearchParams.set(paramKey, `${range[0]}-${range[1]}`);
       } else {
-        const newValueString = `${value[0]}-${value[1]}`;
-        if (currentValue !== newValueString) {
-          newSearchParams.set(paramKey, newValueString);
-          setSearchParams(newSearchParams, { replace: true });
-        }
+        newSearchParams.delete(paramKey);
       }
+    });
+
+    setSearchParams(newSearchParams, { replace: true });
+  }, [
+    selectedAge,
+    costFilters,
+    initialSyncDone,
+    searchParams,
+    setSearchParams,
+    isResetting,
+  ]);
+
+  const handleAgeChange = useCallback(
+    (newAge: Age) => {
+      dispatch(setAge(newAge));
     },
-    [searchParams, setSearchParams],
+    [dispatch],
+  );
+
+  const handleCostChange = useCallback(
+    (type: CostType, value: [number, number] | null) => {
+      dispatch(setCostFilter({ type, value }));
+    },
+    [dispatch],
   );
 
   const handleResetFilters = useCallback(() => {
-    setSearchParams({}, { replace: true });
-  }, [setSearchParams]);
+    setIsResetting(true);
+
+    dispatch(resetFilters());
+
+    const newSearchParams = new URLSearchParams();
+
+    const page = searchParams.get("page");
+    if (page) {
+      newSearchParams.set("page", page);
+    }
+
+    const pageSize = searchParams.get("pageSize");
+    if (pageSize) {
+      newSearchParams.set("pageSize", pageSize);
+    }
+
+    setSearchParams(newSearchParams, { replace: true });
+
+    setTimeout(() => {
+      setIsResetting(false);
+    }, 50);
+  }, [dispatch, searchParams, setSearchParams]);
 
   const filteredUnits = useMemo(() => {
     if (loading !== "succeeded") return [];

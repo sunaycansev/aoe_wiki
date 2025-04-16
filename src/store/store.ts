@@ -3,6 +3,7 @@ import createSagaMiddleware from "redux-saga";
 
 import { rootSaga } from "./sagas/rootSaga";
 import audioReducer from "./slices/audioSlice";
+import filtersReducer from "./slices/filtersSlice";
 import unitsReducer from "./slices/unitsSlice";
 
 const sagaMiddleware = createSagaMiddleware();
@@ -10,6 +11,7 @@ const sagaMiddleware = createSagaMiddleware();
 const rootReducer = {
   units: unitsReducer,
   audio: audioReducer,
+  filters: filtersReducer,
 };
 
 export const storeConfig: ConfigureStoreOptions = {
