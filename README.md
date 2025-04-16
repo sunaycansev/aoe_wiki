@@ -4,7 +4,7 @@ A web application to browse, filter, and view details about units from Age of Em
 
 ## 🚀 Live Demo
 
-Check out the live demo: [AoE Wiki](https://aoe-wiki-3993diia5-sunaycansevs-projects.vercel.app/)
+Check out the live demo: [AoE Wiki](https://aoe-wiki-steel.vercel.app/)
 
 ## 📸 Screenshot
 
