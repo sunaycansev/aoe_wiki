@@ -91,6 +91,26 @@ const UnitsPage = () => {
       }
     });
 
+    const page = searchParams.get("page");
+    if (page) {
+      newSearchParams.set("page", page);
+    }
+
+    const size = searchParams.get("size");
+    if (size) {
+      newSearchParams.set("size", size);
+    }
+
+    const sort = searchParams.get("sort");
+    if (sort) {
+      newSearchParams.set("sort", sort);
+    }
+
+    const search = searchParams.get("search");
+    if (search) {
+      newSearchParams.set("search", search);
+    }
+
     setSearchParams(newSearchParams, { replace: true });
   }, [
     selectedAge,
@@ -127,9 +147,19 @@ const UnitsPage = () => {
       newSearchParams.set("page", page);
     }
 
-    const pageSize = searchParams.get("pageSize");
-    if (pageSize) {
-      newSearchParams.set("pageSize", pageSize);
+    const size = searchParams.get("size");
+    if (size) {
+      newSearchParams.set("size", size);
+    }
+
+    const sort = searchParams.get("sort");
+    if (sort) {
+      newSearchParams.set("sort", sort);
+    }
+
+    const search = searchParams.get("search");
+    if (search) {
+      newSearchParams.set("search", search);
     }
 
     setSearchParams(newSearchParams, { replace: true });
